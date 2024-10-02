@@ -1,22 +1,34 @@
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import React, { useState } from "react";
-import Reviews from "./components/Reviews";
-import ReviewForm from "./components/ReviewForm";
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header/Header";
+import Reviews from "./components/Reviews/Reviews";
+import ReviewForm from "./components/Reviews/ReviewForm";
+import Footer from "./components/Footer/Footer";
+import "./App.css";
 
 const App = () => {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(() => {
+    const savedReviews = localStorage.getItem('reviews');
+    return savedReviews ? JSON.parse(savedReviews) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+  }, [reviews]);
 
   const handleReviewSubmit = (review) => {
-    setReviews([...reviews, review]);
+    const updatedReviews = [...reviews, review];
+    setReviews(updatedReviews);
   };
 
   return (
-    <div>
-      {/* <h1>Reviews Website Prompt Project</h1> */}
+    <div className="App">
       <Header />
-      <ReviewForm onSubmit={handleReviewSubmit} />
-      <Reviews reviews={reviews} />
+      <div className="main-content">
+        <div className="content-wrapper">
+          <ReviewForm onSubmit={handleReviewSubmit} />
+          <Reviews reviews={reviews} />
+        </div>
+      </div>
       <Footer />
     </div>
   );
